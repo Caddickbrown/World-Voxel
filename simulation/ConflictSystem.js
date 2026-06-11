@@ -11,12 +11,6 @@
  * the event.
  */
 export class ConflictSystem {
-  static CONFLICT_RANGE = 1.5;
-  static CONFLICT_CHANCE = 0.20;
-  static ENERGY_PENALTY = 0.05;
-  static COOLDOWN_DURATION = 30; // seconds
-  static POP_THRESHOLD = 15;
-
   /**
    * Assign a faction to an agent based on its id.
    * Call at spawn time.
@@ -91,10 +85,6 @@ export class ConflictSystem {
   }
 
   // ── CAD-176: Settlement-level war ──────────────────────────────────────
-
-  static FOOD_SCARCITY_THRESHOLD = 0.30; // < 30% of 200 carrying capacity = 60
-  static SETTLEMENT_WAR_RANGE    = 8;    // tiles between settlement centres
-  static WAR_COOLDOWN            = 300;  // game-seconds between wars per settlement pair
 
   /**
    * Check all settlement pairs for war conditions. Returns array of war events.
@@ -208,3 +198,14 @@ export class ConflictSystem {
     }
   }
 }
+
+// Assigned after the class (not static class fields) so the file parses on Safari < 14.1
+ConflictSystem.CONFLICT_RANGE = 1.5;
+ConflictSystem.CONFLICT_CHANCE = 0.20;
+ConflictSystem.ENERGY_PENALTY = 0.05;
+ConflictSystem.COOLDOWN_DURATION = 30; // seconds
+ConflictSystem.POP_THRESHOLD = 15;
+// CAD-176: Settlement-level war
+ConflictSystem.FOOD_SCARCITY_THRESHOLD = 0.30; // < 30% of 200 carrying capacity = 60
+ConflictSystem.SETTLEMENT_WAR_RANGE    = 8;    // tiles between settlement centres
+ConflictSystem.WAR_COOLDOWN            = 300;  // game-seconds between wars per settlement pair

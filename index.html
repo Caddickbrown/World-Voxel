@@ -235,7 +235,8 @@ function buildTerrainMesh() {
       const g = ((hex >> 8)  & 0xff) / 255;
       const b = ( hex        & 0xff) / 255;
 
-      // top face (y = cy + VS/2)
+      // top face (y = cy + VS/2) — wound counter-clockwise seen from above so
+      // the front face points up and isn't back-face culled
       positions.push(
         cx-s, cy+VS, cz-s,
         cx+s, cy+VS, cz-s,
@@ -243,19 +244,33 @@ function buildTerrainMesh() {
         cx-s, cy+VS, cz+s,
       );
       for (let k = 0; k < 4; k++) colors.push(r, g, b);
-      indices.push(vi,vi+1,vi+2, vi,vi+2,vi+3);
+      indices.push(vi,vi+2,vi+1, vi,vi+3,vi+2);
       vi += 4;
 
-      // south face (visible edge)
-      if (vz === voxelH - 1 || heights[(vz+1)*voxelW+vx] < h) {
-        const lh = vz < voxelH-1 ? heights[(vz+1)*voxelW+vx] * VS : 0;
+      // side faces where a neighbour column is lower (or at the map border)
+      const dr = r*0.75, dg = g*0.75, db = b*0.75;
+      // [neighbour index or -1, wall x/z offsets a→b, fixed axis]
+      const south = vz === voxelH-1 ? -1 : (vz+1)*voxelW+vx;
+      const north = vz === 0        ? -1 : (vz-1)*voxelW+vx;
+      const east  = vx === voxelW-1 ? -1 : vz*voxelW+vx+1;
+      const west  = vx === 0        ? -1 : vz*voxelW+vx-1;
+      // each entry: bottom-left/bottom-right wall corners ordered so the
+      // outward face winds counter-clockwise from outside
+      const walls = [
+        [south, cx-s, cz+s, cx+s, cz+s],
+        [north, cx+s, cz-s, cx-s, cz-s],
+        [east,  cx+s, cz+s, cx+s, cz-s],
+        [west,  cx-s, cz-s, cx-s, cz+s],
+      ];
+      for (const [ni, ax, az, bx, bz] of walls) {
+        if (ni !== -1 && heights[ni] >= h) continue;
+        const lh = ni === -1 ? 0 : heights[ni] * VS;
         positions.push(
-          cx-s, lh,    cz+s,
-          cx+s, lh,    cz+s,
-          cx+s, cy+VS, cz+s,
-          cx-s, cy+VS, cz+s,
+          ax, lh,    az,
+          bx, lh,    bz,
+          bx, cy+VS, bz,
+          ax, cy+VS, az,
         );
-        const dr = r*0.75, dg = g*0.75, db = b*0.75;
         for (let k = 0; k < 4; k++) colors.push(dr, dg, db);
         indices.push(vi,vi+1,vi+2, vi,vi+2,vi+3);
         vi += 4;
@@ -484,7 +499,11 @@ worker.onmessage = ({ data }) => {
   }
 };
 
-worker.onerror = err => console.error('Worker error:', err);
+worker.onerror = err => {
+  console.error('Worker error:', err);
+  const detail = err && err.message ? err.message : 'failed to load (this browser may not support module workers — Safari needs 15+)';
+  setProgress(0, 'Simulation worker error: ' + detail);
+};
 
 // ─── Game loop ─────────────────────────────────────────────────────────────────
 let lastTime = performance.now();

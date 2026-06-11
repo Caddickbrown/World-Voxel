@@ -2,8 +2,9 @@
  * Achievements — tracks and unlocks gameplay milestones.
  * Persists unlocked achievement IDs to localStorage.
  */
-export class Achievements {
-  static ACHIEVEMENTS = [
+// Plain const + assignment after the class instead of a static class field —
+// Safari < 14.1 can't parse static field syntax.
+const ACHIEVEMENTS = [
     {
       id: 'first_fire',
       title: 'Prometheus',
@@ -61,8 +62,9 @@ export class Achievements {
         return alive.length > 0 && alive.every(a => (a.needs?.hunger ?? 0) > 0.8);
       },
     },
-  ];
+];
 
+export class Achievements {
   /**
    * @param {string[]|null} unlockedIds — seed the unlocked set explicitly
    *   (used in the Worker, where localStorage doesn't exist)
@@ -122,3 +124,5 @@ export class Achievements {
     this._save();
   }
 }
+
+Achievements.ACHIEVEMENTS = ACHIEVEMENTS;

@@ -24,8 +24,6 @@ const DISASTERS = [
 ];
 
 export class DisasterSystem {
-  static DISASTERS = DISASTERS;
-
   constructor() {
     /** Current active disaster: { type, timer } or null */
     this._active = null;
@@ -126,3 +124,6 @@ export class DisasterSystem {
     return 5.0;
   }
 }
+
+// Assigned after the class (not a static class field) so the file parses on Safari < 14.1
+DisasterSystem.DISASTERS = DISASTERS;
