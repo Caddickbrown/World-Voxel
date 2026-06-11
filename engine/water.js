@@ -1,5 +1,5 @@
 // engine/water.js — GPU shader water (zero CPU vertex updates)
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 import { VS } from './world.js';
 
 const VERT = /* glsl */`

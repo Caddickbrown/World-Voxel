@@ -1,5 +1,5 @@
 // engine/daynight.js — Sky, lighting, day/night cycle, clouds
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 
 const KEYS = [
   [0.00, 0x030c1a, 0x101840, 0.05, 0.08],

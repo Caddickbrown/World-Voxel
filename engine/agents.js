@@ -2,7 +2,7 @@
 // Renders World simulation agents as Island-Voxel-style blocky humanoids.
 // Consumes agent DTOs from SimulationWorker STATE messages.
 
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
+import * as THREE from '../vendor/three.module.js';
 import { buildHumanoid, animateHumanoid, HUMANOID_HEIGHT } from './character.js';
 
 const VS = 0.5; // voxels to Three.js units (matches Island Voxel)
