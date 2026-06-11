@@ -1,5 +1,5 @@
 // engine/renderer.js — Three.js scene manager with chunk mesh lifecycle
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 import { VS } from './world.js';
 
 const LANTERN_POOL = 6; // fixed light count → shaders compile once, never again

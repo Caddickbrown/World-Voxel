@@ -1,5 +1,5 @@
 // engine/character.js — Shared blocky-humanoid builder + animation for Player and NPCs
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 import { VS } from './world.js';
 
 // ── Shared body materials (lazy singletons, no ??= for Safari compat) ────────

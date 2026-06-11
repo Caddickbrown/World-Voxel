@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Voxel</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0a0a0f; overflow: hidden; font-family: 'Georgia', serif; color: #e8e8e8; }
@@ -103,7 +104,7 @@
 </div>
 
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
+import * as THREE from './vendor/three.module.js';
 import { buildHumanoid, animateHumanoid, HUMANOID_HEIGHT } from './engine/character.js';
 import { buildHeightmap, tileToVoxel, tileToSurfaceY, SEA_LEVEL, TILE_VOXELS } from './engine/terrain.js';
 
@@ -412,23 +413,30 @@ let agents   = [];
 let paused   = false;
 let simSpeed = 1;
 
-setProgress(10, 'Fetching simulation data…');
+async function init() {
+  setProgress(10, 'Fetching simulation data…');
 
-const [conceptsRes, itemsRes] = await Promise.all([
-  fetch('./data/concepts.json'),
-  fetch('./data/items.json'),
-]);
-const conceptsData = await conceptsRes.json();
-const itemsData    = await itemsRes.json();
+  const [conceptsRes, itemsRes] = await Promise.all([
+    fetch('./data/concepts.json'),
+    fetch('./data/items.json'),
+  ]);
+  const conceptsData = await conceptsRes.json();
+  const itemsData    = await itemsRes.json();
 
-setProgress(25, 'Starting simulation worker…');
+  setProgress(25, 'Starting simulation worker…');
 
-worker.postMessage({
-  type: 'INIT',
-  seed: Math.floor(Math.random() * 99999),
-  agentCount: 40,
-  conceptsData,
-  itemsData,
+  worker.postMessage({
+    type: 'INIT',
+    seed: Math.floor(Math.random() * 99999),
+    agentCount: 40,
+    conceptsData,
+    itemsData,
+  });
+}
+
+init().catch(err => {
+  console.error('Init failed:', err);
+  setProgress(0, 'Failed to load: ' + err.message);
 });
 
 worker.onmessage = ({ data }) => {
