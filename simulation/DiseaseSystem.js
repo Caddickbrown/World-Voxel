@@ -8,12 +8,6 @@
  * the spread chance and shortens the infection.
  */
 export class DiseaseSystem {
-  static ONSET_CHANCE_PER_DAY = 0.04;
-  static SPREAD_RADIUS = 2;          // tiles
-  static SPREAD_CHANCE_PER_SEC = 0.05;
-  static BASE_DURATION = 60;         // game-sec until natural recovery
-  static MEDICINE_DURATION = 35;
-
   constructor() {
     this._lastDay = -1;
     this._spreadTimer = 0;
@@ -90,3 +84,10 @@ export class DiseaseSystem {
     return !!settlement?.knowledgePool?.has('medicine');
   }
 }
+
+// Assigned after the class (not static class fields) so the file parses on Safari < 14.1
+DiseaseSystem.ONSET_CHANCE_PER_DAY = 0.04;
+DiseaseSystem.SPREAD_RADIUS = 2;          // tiles
+DiseaseSystem.SPREAD_CHANCE_PER_SEC = 0.05;
+DiseaseSystem.BASE_DURATION = 60;         // game-sec until natural recovery
+DiseaseSystem.MEDICINE_DURATION = 35;

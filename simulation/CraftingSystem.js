@@ -12,8 +12,6 @@ const RECIPES = new Map([
 ]);
 
 export class CraftingSystem {
-  static RECIPES = RECIPES;
-
   /**
    * Attempt to craft an item.
    * @param {object} agent   — must have .knowledge (Set) and .inventory with .has(id, qty), .remove(id, qty), .add(id, qty)
@@ -47,3 +45,6 @@ export class CraftingSystem {
     return { success: true };
   }
 }
+
+// Assigned after the class (not a static class field) so the file parses on Safari < 14.1
+CraftingSystem.RECIPES = RECIPES;
